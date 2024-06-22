@@ -32,6 +32,7 @@ D:/project/ESP32/BLE_GATT_Example/build/esp-idf/newlib/libnewlib.a
 D:/project/ESP32/BLE_GATT_Example/build/esp-idf/cxx/libcxx.a
 D:/project/ESP32/BLE_GATT_Example/build/esp-idf/app_trace/libapp_trace.a
 D:/project/ESP32/BLE_GATT_Example/build/esp-idf/asio/libasio.a
+D:/project/ESP32/BLE_GATT_Example/build/esp-idf/bt/libbt.a
 D:/project/ESP32/BLE_GATT_Example/build/esp-idf/cbor/libcbor.a
 D:/project/ESP32/BLE_GATT_Example/build/esp-idf/coap/libcoap.a
 D:/project/ESP32/BLE_GATT_Example/build/esp-idf/console/libconsole.a

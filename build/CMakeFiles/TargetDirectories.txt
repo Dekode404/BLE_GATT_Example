@@ -341,6 +341,7 @@ D:/project/ESP32/BLE_GATT_Example/build/esp-idf/bootloader/CMakeFiles/install/lo
 D:/project/ESP32/BLE_GATT_Example/build/esp-idf/bootloader/CMakeFiles/edit_cache.dir
 D:/project/ESP32/BLE_GATT_Example/build/esp-idf/bootloader/CMakeFiles/rebuild_cache.dir
 D:/project/ESP32/BLE_GATT_Example/build/esp-idf/bootloader/CMakeFiles/install/strip.dir
+D:/project/ESP32/BLE_GATT_Example/build/esp-idf/bt/CMakeFiles/__idf_bt.dir
 D:/project/ESP32/BLE_GATT_Example/build/esp-idf/bt/CMakeFiles/install/local.dir
 D:/project/ESP32/BLE_GATT_Example/build/esp-idf/bt/CMakeFiles/install.dir
 D:/project/ESP32/BLE_GATT_Example/build/esp-idf/bt/CMakeFiles/edit_cache.dir
