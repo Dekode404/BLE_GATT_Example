@@ -21,6 +21,39 @@ void BLE_app_advertise(void);
 
 uint8_t ble_addr_type;
 
+int BLE_gap_event(struct ble_gap_event *event, void *arg)
+{
+    switch (event->type)
+    {
+    case BLE_GAP_EVENT_CONNECT:
+        ESP_LOGI("GAP", "BLE_GAP_EVENT_CONNECT %s", event->connect.status == 0 ? "OK" : "FAILED");
+        if (event->connect.status != 0)
+        {
+            BLE_app_advertise();
+        }
+        break;
+
+    case BLE_GAP_EVENT_DISCONNECT:
+        ESP_LOGI("GAP", "BLE_GAP_EVENT_DISCONNECT");
+        BLE_app_advertise();
+        break;
+
+    case BLE_GAP_EVENT_ADV_COMPLETE:
+        ESP_LOGI("GAP", "BLE_GAP_EVENT_ADV_COMPLETE");
+        BLE_app_advertise();
+        break;
+
+    case BLE_GAP_EVENT_SUBSCRIBE:
+        ESP_LOGI("GAP", "BLE_GAP_EVENT_SUBSCRIBE");
+        break;
+
+    default:
+        break;
+    }
+
+    return 0;
+}
+
 void BLE_app_advertise(void)
 {
     struct ble_hs_adv_fields fields;
@@ -36,8 +69,12 @@ void BLE_app_advertise(void)
 
     ble_gap_adv_set_fields(&fields);
 
-    struct ble_gap_adv_params adv_params = (struct ble_gap_adv_params){0}; /* Advertising parameters */
-    ble_gap_adv_start(ble_addr_type, NULL, BLE_HS_FOREVER, &adv_params, NULL, NULL);
+    struct ble_gap_adv_params adv_params;
+    memset(&adv_params, 0, sizeof(adv_params));
+    adv_params.conn_mode = BLE_GAP_CONN_MODE_UND;
+    adv_params.disc_mode = BLE_GAP_DISC_MODE_GEN;
+
+    ble_gap_adv_start(ble_addr_type, NULL, BLE_HS_FOREVER, &adv_params, BLE_gap_event, NULL);
 }
 
 void BLE_app_on_sync(void)
