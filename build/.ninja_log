@@ -1859,3 +1859,15 @@
 54	92	7407574468743121	bootloader/bootloader.bin	18a3fd8d112249f9
 54	92	7407574468743121	bootloader/bootloader.map	18a3fd8d112249f9
 93	8003	0	CMakeFiles/flash	17bfeeced24bc8a7
+2	5771	7407579269886342	build.ninja	5fe57bf812d0a33d
+54	94	7407574468743121	bootloader-prefix/src/bootloader-stamp/bootloader-build	18a3fd8d112249f9
+54	94	7407574468743121	bootloader/bootloader.elf	18a3fd8d112249f9
+54	94	7407574468743121	bootloader/bootloader.bin	18a3fd8d112249f9
+54	94	7407574468743121	bootloader/bootloader.map	18a3fd8d112249f9
+52	280	7407579273246048	esp-idf/app_update/CMakeFiles/__idf_app_update.dir/esp_app_desc.c.obj	d4ac9bae463ddf3c
+280	330	7407579273751662	esp-idf/app_update/libapp_update.a	6aede9e55588b8de
+330	781	7407579278174064	esp-idf/main/CMakeFiles/__idf_main.dir/main.c.obj	111bbb0520c69fe
+781	828	7407579278759982	esp-idf/main/libmain.a	27feb7441298acef
+829	2150	7407579291733641	esp-idf/esp32/ld/esp32.project.ld	258222a6e6d56491
+2150	4299	7407579313290394	BLE_GATT_Example.elf	c55a5e0d2bdeadfe
+4299	4525	7407579315673772	.bin_timestamp	ad38b5ab44cee641
