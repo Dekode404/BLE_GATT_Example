@@ -13,5 +13,12 @@
     ],
     "idf.portWin": "COM5",
     "idf.pythonBinPathWin": "c:\\esp\\tool\\python_env\\idf4.2_py3.8_env\\Scripts\\python.exe",
-    "idf.toolsPathWin": "c:\\esp\\tool"
+    "idf.toolsPathWin": "c:\\esp\\tool",
+    "files.associations": {
+        "ble_svc_gatt.h": "c"
+    },
+    "cSpell.words": [
+        "gatts",
+        "svcs"
+    ]
 }

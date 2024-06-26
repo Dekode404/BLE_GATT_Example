@@ -13,13 +13,35 @@
 #include <nimble/nimble_port.h>          /* This is ESP lib used for initiate the nimbale port for the bluetooth application */
 #include <nimble/nimble_port_freertos.h> /* This is ESP lib used for create the task for the nimble bluetooth application */
 #include <host/ble_hs.h>                 /* This is ESP lib used for the ble host controller */
-#include <services/gap/ble_svc_gap.h>    /* This is ESP lib used for initiate the ble service */
+#include <services/gap/ble_svc_gap.h>    /* This is ESP lib used for initiate the ble GAP service */
+#include "services/gatt/ble_svc_gatt.h"  /* This is ESP lib used for initiate the ble GATT service */
 
 #define DEVICE_NAME "HARTMAN_SIGHT"
 
 void BLE_app_advertise(void);
 
-uint8_t ble_addr_type;
+uint8_t BLE_Addr_type;
+
+#define DEVICE_INFO_SERVICE 0x180A
+
+#define MANUFACTURER_NAME 0x2A29
+
+static int device_info(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg)
+{
+    const char *message = "Paras Defense";
+    os_mbuf_append(ctxt->om, message, strlen(message));
+    return 0;
+}
+
+static const struct ble_gatt_svc_def GATT_Service[] = {
+    {.type = BLE_GATT_SVC_TYPE_PRIMARY,
+     .uuid = BLE_UUID16_DECLARE(DEVICE_INFO_SERVICE),
+     .characteristics = (struct ble_gatt_chr_def[]){
+         {.uuid = BLE_UUID16_DECLARE(MANUFACTURER_NAME),
+          .flags = BLE_GATT_CHR_F_READ,
+          .access_cb = device_info},
+         {0}}},
+    {0}};
 
 int BLE_gap_event(struct ble_gap_event *event, void *arg)
 {
@@ -74,12 +96,12 @@ void BLE_app_advertise(void)
     adv_params.conn_mode = BLE_GAP_CONN_MODE_UND;
     adv_params.disc_mode = BLE_GAP_DISC_MODE_GEN;
 
-    ble_gap_adv_start(ble_addr_type, NULL, BLE_HS_FOREVER, &adv_params, BLE_gap_event, NULL);
+    ble_gap_adv_start(BLE_Addr_type, NULL, BLE_HS_FOREVER, &adv_params, BLE_gap_event, NULL);
 }
 
 void BLE_app_on_sync(void)
 {
-    ble_hs_id_infer_auto(0, &ble_addr_type);
+    ble_hs_id_infer_auto(0, &BLE_Addr_type);
     BLE_app_advertise();
 }
 
@@ -97,6 +119,10 @@ void app_main(void)
 
     ble_svc_gap_device_name_set(DEVICE_NAME);
     ble_svc_gap_init();
+
+    ble_svc_gatt_init();
+    ble_gatts_count_cfg(GATT_Service);
+    ble_gatts_add_svcs(GATT_Service);
 
     ble_hs_cfg.sync_cb = BLE_app_on_sync; /* Set the synchronization callback */
     nimble_port_freertos_init(Host_task); /* Initialize NimBLE port with FreeRTOS */
