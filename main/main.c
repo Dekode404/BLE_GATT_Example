@@ -23,8 +23,17 @@ void BLE_app_advertise(void);
 uint8_t BLE_Addr_type;
 
 #define DEVICE_INFO_SERVICE 0x180A
-
 #define MANUFACTURER_NAME 0x2A29
+
+#define DEVICE_BATTERY_SERVICE 0x180F
+#define BATTERY_INFORMATION 0x2BEC
+
+static int Device_Battery(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg)
+{
+    const char *message = "Not connected";
+    os_mbuf_append(ctxt->om, message, strlen(message));
+    return 0;
+}
 
 static int device_info(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg)
 {
@@ -41,6 +50,8 @@ static const struct ble_gatt_svc_def GATT_Service[] = {
           .flags = BLE_GATT_CHR_F_READ,
           .access_cb = device_info},
          {0}}},
+
+    {.type = BLE_GATT_SVC_TYPE_PRIMARY, .uuid = BLE_UUID16_DECLARE(DEVICE_BATTERY_SERVICE), .characteristics = (struct ble_gatt_chr_def[]){{.uuid = BLE_UUID16_DECLARE(BATTERY_INFORMATION), .flags = BLE_GATT_CHR_F_READ, .access_cb = Device_Battery}, {0}}},
     {0}};
 
 int BLE_gap_event(struct ble_gap_event *event, void *arg)
