@@ -20,16 +20,14 @@
 
 void BLE_app_advertise(void);
 
-uint8_t BLE_Addr_type;
+uint8_t BLE_Addr_Type;
 
 #define DEVICE_INFO_SERVICE 0x180A
 #define MANUFACTURER_NAME 0x2A29
 
 #define DEVICE_BATTERY_SERVICE 0x180F
+#define BATTERY_LEVEL 0x2A19
 #define BATTERY_INFORMATION 0x2BEC
-
-#define CUSTOM_SERVICE_ADDRESS
-#define CUSTOM_CHARACTERISTIC_ADDRESS 0x2BEC
 
 static int Custom_Service(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg)
 {
@@ -37,16 +35,23 @@ static int Custom_Service(uint16_t conn_handle, uint16_t attr_handle, struct ble
     return 0;
 }
 
-static int Device_Battery(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg)
+static int Device_Battery_Level(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg)
 {
-    const char *message = "Not connected";
+    const uint8_t message = 100;
+    os_mbuf_append(ctxt->om, &message, sizeof(message));
+    return 0;
+}
+
+static int Device_Battery_Information(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg)
+{
+    const char *message = "NOT CONNECTED";
     os_mbuf_append(ctxt->om, message, strlen(message));
     return 0;
 }
 
 static int Device_Info(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg)
 {
-    const char *message = "Paras Defense";
+    const char *message = "PARAS DEFENSE";
     os_mbuf_append(ctxt->om, message, strlen(message));
     return 0;
 }
@@ -60,7 +65,7 @@ static const struct ble_gatt_svc_def GATT_Service[] = {
           .access_cb = Device_Info},
          {0}}},
 
-    {.type = BLE_GATT_SVC_TYPE_PRIMARY, .uuid = BLE_UUID16_DECLARE(DEVICE_BATTERY_SERVICE), .characteristics = (struct ble_gatt_chr_def[]){{.uuid = BLE_UUID16_DECLARE(BATTERY_INFORMATION), .flags = BLE_GATT_CHR_F_READ, .access_cb = Device_Battery}, {0}}},
+    {.type = BLE_GATT_SVC_TYPE_PRIMARY, .uuid = BLE_UUID16_DECLARE(DEVICE_BATTERY_SERVICE), .characteristics = (struct ble_gatt_chr_def[]){{.uuid = BLE_UUID16_DECLARE(BATTERY_INFORMATION), .flags = BLE_GATT_CHR_F_READ, .access_cb = Device_Battery_Information}, {.uuid = BLE_UUID16_DECLARE(BATTERY_LEVEL), .flags = BLE_GATT_CHR_F_READ, .access_cb = Device_Battery_Level}, {0}}},
 
     {.type = BLE_GATT_SVC_TYPE_PRIMARY, .uuid = BLE_UUID128_DECLARE(0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff), .characteristics = (struct ble_gatt_chr_def[]){{.uuid = BLE_UUID128_DECLARE(0xff, 0xee, 0xdd, 0xcc, 0xbb, 0xaa, 0x99, 0x88, 0x77, 0x66, 0x55, 0x44, 0x33, 0x22, 0x11, 0x00), .flags = BLE_GATT_CHR_F_WRITE, .access_cb = Custom_Service}, {0}}},
 
@@ -119,12 +124,12 @@ void BLE_app_advertise(void)
     adv_params.conn_mode = BLE_GAP_CONN_MODE_UND;
     adv_params.disc_mode = BLE_GAP_DISC_MODE_GEN;
 
-    ble_gap_adv_start(BLE_Addr_type, NULL, BLE_HS_FOREVER, &adv_params, BLE_gap_event, NULL);
+    ble_gap_adv_start(BLE_Addr_Type, NULL, BLE_HS_FOREVER, &adv_params, BLE_gap_event, NULL);
 }
 
 void BLE_app_on_sync(void)
 {
-    ble_hs_id_infer_auto(0, &BLE_Addr_type);
+    ble_hs_id_infer_auto(0, &BLE_Addr_Type);
     BLE_app_advertise();
 }
 
