@@ -200,27 +200,35 @@ int BLE_gap_event(struct ble_gap_event *event, void *arg)
     return 0; /* Return success */
 }
 
+/**
+ * @brief Start BLE advertising
+ *
+ * This function sets up the BLE advertising fields and parameters, and then
+ * starts the advertising process. It configures the advertising data with
+ * the device name and TX power level, and sets the advertising parameters
+ * such as connection mode and discovery mode.
+ */
 void BLE_app_advertise(void)
 {
-    struct ble_hs_adv_fields fields;
-    memset(&fields, 0, sizeof(fields));
+    struct ble_hs_adv_fields fields;    /* Declare advertising fields */
+    memset(&fields, 0, sizeof(fields)); /* Clear the advertising fields structure */
 
-    fields.flags = BLE_HS_ADV_F_DISC_GEN | BLE_HS_ADV_F_DISC_LTD;
-    fields.tx_pwr_lvl_is_present = true;
-    fields.tx_pwr_lvl = BLE_HS_ADV_TX_PWR_LVL_AUTO;
+    fields.flags = BLE_HS_ADV_F_DISC_GEN | BLE_HS_ADV_F_DISC_LTD; /* Set the advertising flags for general and limited discoverability */
+    fields.tx_pwr_lvl_is_present = true;                          /* Indicate that the TX power level is present */
+    fields.tx_pwr_lvl = BLE_HS_ADV_TX_PWR_LVL_AUTO;               /* Set the TX power level to auto */
 
-    fields.name = (uint8_t *)ble_svc_gap_device_name();
-    fields.name_len = strlen(ble_svc_gap_device_name());
-    fields.name_is_complete = true;
+    fields.name = (uint8_t *)ble_svc_gap_device_name();  /* Set the device name for advertising */
+    fields.name_len = strlen(ble_svc_gap_device_name()); /* Set the length of the device name */
+    fields.name_is_complete = true;                      /* Indicate that the device name is complete */
 
-    ble_gap_adv_set_fields(&fields);
+    ble_gap_adv_set_fields(&fields); /* Set the advertising fields */
 
-    struct ble_gap_adv_params adv_params;
-    memset(&adv_params, 0, sizeof(adv_params));
-    adv_params.conn_mode = BLE_GAP_CONN_MODE_UND;
-    adv_params.disc_mode = BLE_GAP_DISC_MODE_GEN;
+    struct ble_gap_adv_params adv_params;         /* Declare advertising parameters */
+    memset(&adv_params, 0, sizeof(adv_params));   /* Clear the advertising parameters structure */
+    adv_params.conn_mode = BLE_GAP_CONN_MODE_UND; /* Set the connection mode to undirected */
+    adv_params.disc_mode = BLE_GAP_DISC_MODE_GEN; /* Set the discovery mode to general */
 
-    ble_gap_adv_start(BLE_Addr_Type, NULL, BLE_HS_FOREVER, &adv_params, BLE_gap_event, NULL);
+    ble_gap_adv_start(BLE_Addr_Type, NULL, BLE_HS_FOREVER, &adv_params, BLE_gap_event, NULL); /* Start advertising */
 }
 
 void BLE_app_on_sync(void)
