@@ -2238,3 +2238,4 @@
 47	84	7407574468743121	bootloader/bootloader.bin	18a3fd8d112249f9
 47	84	7407574468743121	bootloader/bootloader.map	18a3fd8d112249f9
 84	12482	0	CMakeFiles/flash	17bfeeced24bc8a7
+0	4381410	0	CMakeFiles/confserver	2c177e8b988e513f

@@ -89,19 +89,65 @@ static int Device_Info(uint16_t conn_handle, uint16_t attr_handle, struct ble_ga
     return 0;
 }
 
+/**
+ * @brief GATT service definitions
+ *
+ * This array defines the GATT services and characteristics for the BLE application.
+ * It includes the Device Information Service, Battery Service, and a Custom Service.
+ *
+ * - Device Information Service:
+ *   - Characteristic: Manufacturer Name (Read-only)
+ *
+ * - Battery Service:
+ *   - Characteristic: Battery Information (Read-only)
+ *   - Characteristic: Battery Level (Read and Notify)
+ *     - Descriptor: Client Configuration (Read and Write)
+ *
+ * - Custom Service:
+ *   - Characteristic: Custom Characteristic (Write-only)
+ *
+ * The services are defined as primary services. Each characteristic within a service
+ * has a UUID, flags indicating its properties (e.g., read, write, notify), and an
+ * access callback function to handle read/write operations.
+ */
 static const struct ble_gatt_svc_def GATT_Service[] =
     {
-        {.type = BLE_GATT_SVC_TYPE_PRIMARY,
-         .uuid = BLE_UUID16_DECLARE(DEVICE_INFO_SERVICE),
-         .characteristics = (struct ble_gatt_chr_def[]){
-             {.uuid = BLE_UUID16_DECLARE(MANUFACTURER_NAME),
-              .flags = BLE_GATT_CHR_F_READ,
-              .access_cb = Device_Info},
-             {0}}},
+        {.type = BLE_GATT_SVC_TYPE_PRIMARY,               /* Primary service */
+         .uuid = BLE_UUID16_DECLARE(DEVICE_INFO_SERVICE), /* Device information service UUID */
+         .characteristics = (struct ble_gatt_chr_def[]){{
+                                                            .uuid = BLE_UUID16_DECLARE(MANUFACTURER_NAME), /* Manufacturer name characteristic UUID */
+                                                            .flags = BLE_GATT_CHR_F_READ,                  /* Read flag */
+                                                            .access_cb = Device_Info                       /* Access callback for device information */
+                                                        },
+                                                        {0}}},
 
-        {.type = BLE_GATT_SVC_TYPE_PRIMARY, .uuid = BLE_UUID16_DECLARE(DEVICE_BATTERY_SERVICE), .characteristics = (struct ble_gatt_chr_def[]){{.uuid = BLE_UUID16_DECLARE(BATTERY_INFORMATION), .flags = BLE_GATT_CHR_F_READ, .access_cb = Device_Battery_Information}, {.uuid = BLE_UUID16_DECLARE(BATTERY_LEVEL), .flags = BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_NOTIFY, .access_cb = Device_Battery_Level, .val_handle = &Battery_level_characteristic_attribute_handler, .descriptors = (struct ble_gatt_dsc_def[]){{.uuid = BLE_UUID16_DECLARE(BATTERY_CLIENT_CONFIG_DESCRIPTOR), .att_flags = BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_WRITE, .access_cb = Battery_Level_Descriptor}, {0}}}}},
+        {.type = BLE_GATT_SVC_TYPE_PRIMARY,                  /* Primary service */
+         .uuid = BLE_UUID16_DECLARE(DEVICE_BATTERY_SERVICE), /* Battery service UUID */
+         .characteristics = (struct ble_gatt_chr_def[]){{
+                                                            .uuid = BLE_UUID16_DECLARE(BATTERY_INFORMATION), /* Battery information characteristic UUID */
+                                                            .flags = BLE_GATT_CHR_F_READ,                    /* Read flag */
+                                                            .access_cb = Device_Battery_Information          /* Access callback for battery information */
+                                                        },
+                                                        {.uuid = BLE_UUID16_DECLARE(BATTERY_LEVEL),                     /* Battery level characteristic UUID */
+                                                         .flags = BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_NOTIFY,          /* Read and notify flags */
+                                                         .access_cb = Device_Battery_Level,                             /* Access callback for battery level */
+                                                         .val_handle = &Battery_level_characteristic_attribute_handler, /* Handle for the battery level characteristic */
+                                                         .descriptors = (struct ble_gatt_dsc_def[]){{
+                                                                                                        .uuid = BLE_UUID16_DECLARE(BATTERY_CLIENT_CONFIG_DESCRIPTOR), /* Client configuration descriptor UUID */
+                                                                                                        .att_flags = BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_WRITE,      /* Read and write flags */
+                                                                                                        .access_cb = Battery_Level_Descriptor                         /* Access callback for battery level descriptor */
+                                                                                                    },
+                                                                                                    {0}}},
+                                                        {0}}},
 
-        {.type = BLE_GATT_SVC_TYPE_PRIMARY, .uuid = BLE_UUID128_DECLARE(0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff), .characteristics = (struct ble_gatt_chr_def[]){{.uuid = BLE_UUID128_DECLARE(0xff, 0xee, 0xdd, 0xcc, 0xbb, 0xaa, 0x99, 0x88, 0x77, 0x66, 0x55, 0x44, 0x33, 0x22, 0x11, 0x00), .flags = BLE_GATT_CHR_F_WRITE, .access_cb = Custom_Service}, {0}}},
+        {.type = BLE_GATT_SVC_TYPE_PRIMARY,                                                                                           /* Primary service */
+         .uuid = BLE_UUID128_DECLARE(0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff), /* Custom service UUID */
+         .characteristics = (struct ble_gatt_chr_def[]){{
+                                                            .uuid = BLE_UUID128_DECLARE(0xff, 0xee, 0xdd, 0xcc, 0xbb, 0xaa, 0x99, 0x88, 0x77, 0x66, 0x55, 0x44, 0x33, 0x22, 0x11, 0x00), /* Custom characteristic UUID */
+                                                            .flags = BLE_GATT_CHR_F_WRITE,                                                                                               /* Write flag */
+                                                            .access_cb = Custom_Service                                                                                                  /* Access callback for custom service */
+                                                        },
+                                                        {0}}},
         {0}};
 
 int BLE_gap_event(struct ble_gap_event *event, void *arg)
