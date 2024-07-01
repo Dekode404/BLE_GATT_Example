@@ -260,19 +260,19 @@ void app_main(void)
 {
     ESP_ERROR_CHECK(nvs_flash_init()); /* Initialize NVS flash */
 
-    ESP_ERROR_CHECK(esp_nimble_hci_and_controller_init()); /* Initiate the Nimble BLE Hardware control interference and controller */
-    nimble_port_init();                                    /* Initiate the nimble port for the BLE */
+    ESP_ERROR_CHECK(esp_nimble_hci_and_controller_init()); /* Initialize the NimBLE HCI and controller */
+    nimble_port_init();                                    /* Initialize the NimBLE port */
 
-    ble_svc_gap_device_name_set(DEVICE_NAME);
-    ble_svc_gap_init();
+    ble_svc_gap_device_name_set(DEVICE_NAME); /* Set the device name */
+    ble_svc_gap_init();                       /* Initialize the GAP service */
 
-    ble_svc_gatt_init();
-    ble_gatts_count_cfg(GATT_Service);
-    ble_gatts_add_svcs(GATT_Service);
+    ble_svc_gatt_init();               /* Initialize the GATT service */
+    ble_gatts_count_cfg(GATT_Service); /* Count the GATT services */
+    ble_gatts_add_svcs(GATT_Service);  /* Add the GATT services */
 
     ble_hs_cfg.sync_cb = BLE_app_on_sync; /* Set the synchronization callback */
 
-    Battery_Timer_Handler = xTimerCreate("Update_Battery_Timer", pdMS_TO_TICKS(1000), pdTRUE, NULL, Update_Battery_Timer);
+    Battery_Timer_Handler = xTimerCreate("Update_Battery_Timer", pdMS_TO_TICKS(1000), pdTRUE, NULL, Update_Battery_Timer); /* Create the battery timer */
 
     nimble_port_freertos_init(Host_task); /* Initialize NimBLE port with FreeRTOS */
 }
