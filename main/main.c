@@ -42,51 +42,51 @@ static uint8_t config[2] = {0x01, 0x00};
 
 static int Battery_Level_Descriptor(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg)
 {
-    if (ctxt->op == BLE_GATT_ACCESS_OP_READ_DSC)
+    if (ctxt->op == BLE_GATT_ACCESS_OP_READ_DSC) /* Check if the operation is a read descriptor */
     {
-        os_mbuf_append(ctxt->om, &config, sizeof(config));
+        os_mbuf_append(ctxt->om, &config, sizeof(config)); /* Append the configuration to the output buffer */
     }
-    else
+    else /* If the operation is not read, it must be write */
     {
-        memcpy(config, ctxt->om->om_data, ctxt->om->om_len);
+        memcpy(config, ctxt->om->om_data, ctxt->om->om_len); /* Copy the configuration from the input buffer */
     }
 
-    if (config[0] == 0x01)
+    if (config[0] == 0x01) /* If the configuration is set to notify */
     {
-        xTimerStart(Battery_Timer_Handler, 0);
+        xTimerStart(Battery_Timer_Handler, 0); /* Start the battery timer */
     }
-    else
+    else /* If the configuration is set to stop notifying */
     {
-        xTimerStop(Battery_Timer_Handler, 0);
+        xTimerStop(Battery_Timer_Handler, 0); /* Stop the battery timer */
     }
-    return 0;
+    return 0; /* Return success */
 }
 
 static int Custom_Service(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg)
 {
-    printf("Incoming Message :- %.*s \n", ctxt->om->om_len, ctxt->om->om_data);
-    return 0;
+    printf("Incoming Message :- %.*s \n", ctxt->om->om_len, ctxt->om->om_data); /* Print the incoming message */
+    return 0;                                                                   /* Return success */
 }
 
 static int Device_Battery_Level(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg)
 {
-    const uint8_t message = 100;
-    os_mbuf_append(ctxt->om, &message, sizeof(message));
-    return 0;
+    const uint8_t message = 100;                         /* Battery level message */
+    os_mbuf_append(ctxt->om, &message, sizeof(message)); /* Append the message to the output buffer */
+    return 0;                                            /* Return success */
 }
 
 static int Device_Battery_Information(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg)
 {
-    const char *message = "NOT CONNECTED";
-    os_mbuf_append(ctxt->om, message, strlen(message));
-    return 0;
+    const char *message = "NOT CONNECTED";              /* Battery information message */
+    os_mbuf_append(ctxt->om, message, strlen(message)); /* Append the message to the output buffer */
+    return 0;                                           /* Return success */
 }
 
 static int Device_Info(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg)
 {
-    const char *message = "PARAS DEFENSE";
-    os_mbuf_append(ctxt->om, message, strlen(message));
-    return 0;
+    const char *message = "PARAS DEFENSE";              /* Device information message */
+    os_mbuf_append(ctxt->om, message, strlen(message)); /* Append the message to the output buffer */
+    return 0;                                           /* Return success */
 }
 
 /**
