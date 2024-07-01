@@ -150,43 +150,54 @@ static const struct ble_gatt_svc_def GATT_Service[] =
                                                         {0}}},
         {0}};
 
+/**
+ * @brief BLE GAP event handler
+ *
+ * This function handles various GAP events such as connection, disconnection,
+ * advertising complete, and subscription. It logs the events and performs
+ * appropriate actions based on the event type.
+ *
+ * @param event Pointer to the BLE GAP event structure.
+ * @param arg Pointer to user-defined argument.
+ * @return int 0 on success, error code otherwise.
+ */
 int BLE_gap_event(struct ble_gap_event *event, void *arg)
 {
-    switch (event->type)
+    switch (event->type) /* Switch on the type of GAP event */
     {
-    case BLE_GAP_EVENT_CONNECT:
-        ESP_LOGI("GAP", "BLE_GAP_EVENT_CONNECT %s", event->connect.status == 0 ? "OK" : "FAILED");
-        if (event->connect.status != 0)
+    case BLE_GAP_EVENT_CONNECT:                                                                    /* Event type: Connection */
+        ESP_LOGI("GAP", "BLE_GAP_EVENT_CONNECT %s", event->connect.status == 0 ? "OK" : "FAILED"); /* Log the connection event status */
+        if (event->connect.status != 0)                                                            /* If the connection failed */
         {
-            BLE_app_advertise();
+            BLE_app_advertise(); /* Restart advertising */
         }
-        connection_handler = event->connect.conn_handle;
+        connection_handler = event->connect.conn_handle; /* Save the connection handle */
         break;
 
-    case BLE_GAP_EVENT_DISCONNECT:
-        ESP_LOGI("GAP", "BLE_GAP_EVENT_DISCONNECT");
-        BLE_app_advertise();
+    case BLE_GAP_EVENT_DISCONNECT:                   /* Event type: Disconnection */
+        ESP_LOGI("GAP", "BLE_GAP_EVENT_DISCONNECT"); /* Log the disconnection event */
+        BLE_app_advertise();                         /* Restart advertising */
         break;
 
-    case BLE_GAP_EVENT_ADV_COMPLETE:
-        ESP_LOGI("GAP", "BLE_GAP_EVENT_ADV_COMPLETE");
-        BLE_app_advertise();
+    case BLE_GAP_EVENT_ADV_COMPLETE:                   /* Event type: Advertising complete */
+        ESP_LOGI("GAP", "BLE_GAP_EVENT_ADV_COMPLETE"); /* Log the advertising complete event */
+        BLE_app_advertise();                           /* Restart advertising */
         break;
 
-    case BLE_GAP_EVENT_SUBSCRIBE:
-        ESP_LOGI("GAP", "BLE_GAP_EVENT_SUBSCRIBE");
+    case BLE_GAP_EVENT_SUBSCRIBE:                   /* Event type: Subscription */
+        ESP_LOGI("GAP", "BLE_GAP_EVENT_SUBSCRIBE"); /* Log the subscribe event */
 
-        if (event->subscribe.attr_handle == Battery_level_characteristic_attribute_handler)
+        if (event->subscribe.attr_handle == Battery_level_characteristic_attribute_handler) /* Check if the subscription is for the battery level characteristic */
         {
-            xTimerStart(Battery_Timer_Handler, 0);
+            xTimerStart(Battery_Timer_Handler, 0); /* Start the battery timer */
         }
         break;
 
-    default:
+    default: /* Default case for unhandled events */
         break;
     }
 
-    return 0;
+    return 0; /* Return success */
 }
 
 void BLE_app_advertise(void)
