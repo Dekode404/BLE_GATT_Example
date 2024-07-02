@@ -16,26 +16,22 @@
 #include <services/gap/ble_svc_gap.h>    /* This is ESP lib used for initiate the ble GAP service */
 #include "services/gatt/ble_svc_gatt.h"  /* This is ESP lib used for initiate the ble GATT service */
 
-#define DEVICE_NAME "HARTMAN_SIGHT"
+#define DEVICE_NAME "HARTMAN_SIGHT"             /* Define the device name */
+#define DEVICE_INFO_SERVICE 0x180A              /* Define the device information service UUID */
+#define MANUFACTURER_NAME 0x2A29                /* Define the manufacturer name characteristic UUID */
+#define DEVICE_BATTERY_SERVICE 0x180F           /* Define the device battery service UUID */
+#define BATTERY_LEVEL 0x2A19                    /* Define the battery level characteristic UUID */
+#define BATTERY_CLIENT_CONFIG_DESCRIPTOR 0x2902 /* Define the battery client configuration descriptor UUID */
+#define BATTERY_INFORMATION 0x2BEC              /* Define the battery information characteristic UUID */
 
-#define DEVICE_INFO_SERVICE 0x180A
-#define MANUFACTURER_NAME 0x2A29
+void BLE_app_advertise(void); /* Function prototype for advertising */
 
-#define DEVICE_BATTERY_SERVICE 0x180F
-#define BATTERY_LEVEL 0x2A19
-#define BATTERY_CLIENT_CONFIG_DESCRIPTOR 0x2902
-#define BATTERY_INFORMATION 0x2BEC
+uint8_t BLE_Addr_Type;                                   /* Variable to hold the BLE address type */
+uint16_t Battery_level_characteristic_attribute_handler; /* Variable to hold the battery level characteristic attribute handler */
+uint16_t connection_handler;                             /* Variable to hold the connection handler */
+static xTimerHandle Battery_Timer_Handler;               /* Timer handler for the battery level update */
 
-void BLE_app_advertise(void);
-
-uint8_t BLE_Addr_Type;
-
-uint8_t Battery_Level = 100;
-
-uint16_t Battery_level_characteristic_attribute_handler;
-uint16_t connection_handler;
-
-static xTimerHandle Battery_Timer_Handler;
+uint8_t Battery_Level = 100; /* Variable to hold the battery level */
 
 /* Configuration array for Client Characteristic Configuration Descriptor (CCCD):
  * 0x01: Enable notifications
