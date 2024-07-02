@@ -257,18 +257,26 @@ void Host_task(void *param)
     nimble_port_run(); /* Run the NimBLE port */
 }
 
+/**
+ * @brief Timer callback function to update battery level
+ *
+ * This function is called periodically by a timer to simulate the battery
+ * level update. It decrements the battery level, resets it to 100 when it
+ * reaches 0, prints the current battery level, and sends a notification
+ * to the connected client with the updated battery level.
+ */
 void Update_Battery_Timer()
 {
-    if (Battery_Level-- == 0)
+    if (Battery_Level-- == 0) /* Decrement the battery level, reset if it reaches 0 */
     {
-        Battery_Level = 100;
+        Battery_Level = 100; /* Reset battery level to 100 */
     }
 
-    printf("Reporting battery level %d\n", Battery_Level);
+    printf("Reporting battery level %d\n", Battery_Level); /* Print the battery level */
 
-    struct os_mbuf *om = ble_hs_mbuf_from_flat(&Battery_Level, sizeof(Battery_Level));
+    struct os_mbuf *om = ble_hs_mbuf_from_flat(&Battery_Level, sizeof(Battery_Level)); /* Create an mbuf from the battery level */
 
-    ble_gattc_notify_custom(connection_handler, Battery_level_characteristic_attribute_handler, om);
+    ble_gattc_notify_custom(connection_handler, Battery_level_characteristic_attribute_handler, om); /* Notify the client with the battery level */
 }
 
 void app_main(void)
