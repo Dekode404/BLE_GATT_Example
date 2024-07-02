@@ -37,7 +37,15 @@ uint16_t connection_handler;
 
 static xTimerHandle Battery_Timer_Handler;
 
-// see https://www.bluetooth.com/wp-content/uploads/Sitecore-Media-Library/Gatt/Xml/Descriptors/org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml
+/* Configuration array for Client Characteristic Configuration Descriptor (CCCD):
+ * 0x01: Enable notifications
+ * 0x00: Disable notifications
+ *
+ * The `static` keyword ensures that the `config` array retains its value between function calls,
+ * making it persistent and not re-initialized with every function call.
+ * The array is initialized with {0x01, 0x00}, meaning that notifications are enabled by default.
+ * @link https://www.bluetooth.com/wp-content/uploads/Sitecore-Media-Library/Gatt/Xml/Descriptors/org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml
+ */
 static uint8_t config[2] = {0x01, 0x00};
 
 /**
