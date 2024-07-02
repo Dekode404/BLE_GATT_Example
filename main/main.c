@@ -231,10 +231,17 @@ void BLE_app_advertise(void)
     ble_gap_adv_start(BLE_Addr_Type, NULL, BLE_HS_FOREVER, &adv_params, BLE_gap_event, NULL); /* Start advertising */
 }
 
+/**
+ * @brief BLE synchronization callback
+ *
+ * This function is called when the BLE stack has completed synchronization.
+ * It infers the BLE address type automatically and starts the advertising
+ * process.
+ */
 void BLE_app_on_sync(void)
 {
-    ble_hs_id_infer_auto(0, &BLE_Addr_Type);
-    BLE_app_advertise();
+    ble_hs_id_infer_auto(0, &BLE_Addr_Type); /* Infer the BLE address type automatically */
+    BLE_app_advertise();                     /* Start advertising */
 }
 
 /**
