@@ -40,6 +40,19 @@ static xTimerHandle Battery_Timer_Handler;
 // see https://www.bluetooth.com/wp-content/uploads/Sitecore-Media-Library/Gatt/Xml/Descriptors/org.bluetooth.descriptor.gatt.client_characteristic_configuration.xml
 static uint8_t config[2] = {0x01, 0x00};
 
+/**
+ * @brief GATT descriptor access callback for battery level notifications
+ *
+ * This function handles read and write operations to the battery level
+ * descriptor. It updates the configuration based on the client's request
+ * and starts or stops the battery level timer accordingly.
+ *
+ * @param conn_handle Connection handle
+ * @param attr_handle Attribute handle
+ * @param ctxt GATT access context
+ * @param arg User-defined argument
+ * @return int Returns 0 on success
+ */
 static int Battery_Level_Descriptor(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg)
 {
     if (ctxt->op == BLE_GATT_ACCESS_OP_READ_DSC) /* Check if the operation is a read descriptor */
