@@ -237,9 +237,17 @@ void BLE_app_on_sync(void)
     BLE_app_advertise();
 }
 
+/**
+ * @brief Task function to run the NimBLE port
+ *
+ * This function is the main task that runs the NimBLE port. It is intended
+ * to be called within a FreeRTOS task to manage the BLE stack's execution.
+ *
+ * @param param Pointer to the task's parameter (unused)
+ */
 void Host_task(void *param)
 {
-    nimble_port_run(); /* Run the nimble port */
+    nimble_port_run(); /* Run the NimBLE port */
 }
 
 void Update_Battery_Timer()
