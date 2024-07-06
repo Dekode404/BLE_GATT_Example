@@ -193,6 +193,7 @@ int BLE_gap_event(struct ble_gap_event *event, void *arg)
 
     case BLE_GAP_EVENT_DISCONNECT:                   /* Event type: Disconnection */
         ESP_LOGI("GAP", "BLE_GAP_EVENT_DISCONNECT"); /* Log the disconnection event */
+        xTimerStop(Battery_Timer_Handler, 0);        /* Start the battery timer */
         BLE_app_advertise();                         /* Restart advertising */
         break;
 

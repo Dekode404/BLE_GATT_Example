@@ -6,7 +6,7 @@
     "config_defaults":    "",
     "app_elf":            "BLE_GATT_Example.elf",
     "app_bin":            "BLE_GATT_Example.bin",
-    "git_revision":       "v4.2.4-dirty",
+    "git_revision":       "v4.2.4",
     "target":             "esp32",
     "phy_data_partition": "",
     "monitor_baud" :      "115200",
